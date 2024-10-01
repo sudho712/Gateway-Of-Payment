@@ -1,3 +1,36 @@
+
+
+<?php
+// Include the configuration file for database connection
+require 'config.php';
+
+$msg = ""; // Initialize the message variable
+
+// Check if the form is submitted
+if (isset($_POST['submit'])) {
+    $p_name = $_POST["pName"];  // Corrected '$_post' to '$_POST'
+    $p_price = $_POST['pPrice']; // Corrected '$_post' to '$_POST'
+
+    // Set the target directory for image upload
+    $target_dir = "image/";
+    $target_file = $target_dir . basename($_FILES['pImage']['name']);
+
+    // Move the uploaded file to the target directory
+    if (move_uploaded_file($_FILES['pImage']['tmp_name'], $target_file)) {
+        // SQL query to insert data into the product table
+        $sql = "INSERT INTO product (product_name, product_price, product_image) VALUES ('$p_name', '$p_price', '$target_file')";
+        
+        // Execute the SQL query
+        if (mysqli_query($conn, $sql)) {
+            $msg = "Product added successfully.";
+        } else {
+            $msg = "Error: " . mysqli_error($conn);
+        }
+    } else {
+        $msg = "Failed to upload the image.";
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
